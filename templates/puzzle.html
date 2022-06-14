@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Puzzle</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/puzzle.css')}}">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul class="navigation-list">
+                <li>
+                    <a href="/leaderboard">Leaderboard</a>
+                </li>
+                <li>
+                    <a href="/puzzle">Puzzle</a>
+                </li>
+                <li>
+                    <a href="/logout">Logout</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="puzzle-container">
+        <br>
+        <h2>Current Level : {{level}}</h2>
+        <br>
+        <div class="image-container">
+            <img src={{image_link}} />
+        </div>
+        <form action="/puzzle" method="POST">
+            <div class="form-container">
+                <div class="textbox">
+                    <input type="text" name="answer" placeholder="Enter your answer here">
+                </div>
+                <div>
+                    <input class="button" type="submit" title="Submit">
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

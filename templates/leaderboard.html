@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/leaderboard.css')}}">
+    <title>Leaderboard</title>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul class="navigation-list">
+                <li>
+                    <a href="/leaderboard">Leaderboard</a>
+                </li>
+                <li>
+                    <a href="/puzzle">Puzzle</a>
+                </li>
+                <li>
+                    <a href="/logout">Logout</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <div align="center">
+        <br>
+        <h2>Current Standings</h2>
+        <table class="content-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Team Name</th>
+                    <th>Puzzles Completed</th>
+                    <th>Time Completed</th>
+                </tr>
+            </thead>
+            {%for user in user_list%}
+            <tr>
+                <td>{{loop.index}}</td>
+                <td>{{user.name}}</td>
+                <td>{{user.level_completed}}</td>
+                <td>{{user.last_time}}</td>
+            </tr>
+            {%endfor%}
+        </table>
+    </div>
+</body>
+
+</html>

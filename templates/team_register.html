@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Login Panel</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/team_register.css')}}">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul class="navigation-list">
+                <li>
+                    <a href="/admin_dashboard">Admin Dashboard</a>
+                </li>
+                <li>
+                    <a href="/team_reg">Team Registration</a>
+                </li>
+                <li>
+                    <a href="/admin">Logout</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <div class="login-box">
+        <h1>Team Registration</h1>
+        <form action="/team_reg" method="POST">
+            <div class="textbox">
+                <input type="text" id="teamname" name="teamname" placeholder="Teamname">
+            </div>
+            <div class="textbox">
+                <input type="password" id="password" name="password" placeholder="Password">
+            </div>
+            <div class="textbox">
+                <input type="text" id="token" name="token" placeholder="Team Token">
+            </div>
+            <div>
+                <input class="button" type="submit" title="Register">
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
