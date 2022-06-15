@@ -117,7 +117,7 @@ def puzzle():
 
         else:
             print("POST + ")
-            answer = request.form.get("answer").strip()
+            answer = request.form.get("answer").strip().replace(' ', '')
             answer_lower = answer.lower()
             print('submitted answer: ', answer)
 
