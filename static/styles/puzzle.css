@@ -73,7 +73,7 @@ body {
     align-content: center;
     align-self: center;
     height: auto;
-    max-height: 30rem;
+    max-height: 80vh;
     alt: "puzzle";
 }
 
