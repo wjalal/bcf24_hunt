@@ -73,7 +73,7 @@ body {
     align-self: center;
     height: auto;
     alt: "puzzle";
-    width: 95vw;
+    width: 100%;
 }
 
 .puzzle-container h2 {
