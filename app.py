@@ -35,9 +35,9 @@ class User(UserMixin, db.Model):
 
 
 class Quiz(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(40), unique=True, nullable=False)
-    answer = db.Column(db.String(40), unique=True, nullable=False)
+    id = db.Column(db.String(1), primary_key=True)
+    link = db.Column(db.String(100), nullable=False)
+    answer = db.Column(db.String(100), nullable=False)
 
     def __repr__(self):
         return "ID: " + str(self.id) + " Answer: " + self.answer
@@ -76,11 +76,13 @@ def index():
         return render_template("index.html")
 
     elif request.method == 'POST':
-        username = request.form.get("username")
-        password = request.form.get("password")
-
+        print('Login request')
+        username = request.form.get("username").strip()
+        password = request.form.get("password").strip()
+        print(username, ',', password)
         user = User.query.filter_by(name=username).first()
         password = hashlib.sha256(password.encode()).hexdigest()
+        print(user)
 
         if user is not None and password == user.pwd:
             user_is_logged_in = True
@@ -96,40 +98,55 @@ def index():
 @app.route("/puzzle", methods=['GET', 'POST'])
 @login_required
 def puzzle():
-    TOTAL_QUIZ = len(Quiz.query.all())
+    # TOTAL_QUIZ = len(Quiz.query.all())
+    # print(TOTAL_QUIZ)
+
+    token = current_user.token
+    TOTAL_QUIZ = len(token)
     print(TOTAL_QUIZ)
+    current_level = current_user.level_completed 
+    print(current_level)
+
 
     if request.method == 'POST':
-        current_level = current_user.level_completed + 1
         print("POST")
-        print(current_level)
 
-        if current_level > TOTAL_QUIZ:
+        if current_level >= TOTAL_QUIZ:
             print("POST + CURRENT_LEVEL == TOTAL_QUIZ")
             return redirect(url_for("congrats"))
 
         else:
             print("POST + ")
-            answer = request.form.get("answer")
+            answer = request.form.get("answer").strip()
             answer_lower = answer.lower()
-            answer_lower = answer_lower.strip()
-            print(answer)
+            print('submitted answer: ', answer)
 
-            current_puzzle_name = current_user.token[current_level-1]
-            print("Current puzzle name:")
-            print(current_puzzle_name)
+            current_puzzle_id = token[current_level]
+            is_location = str(current_puzzle_id).islower()
+            print("Current puzzle id: ", current_puzzle_id)
+            print("is location: ", is_location)
 
             current_puzzle = Quiz.query.filter_by(
-                name=current_puzzle_name).first()
+                id=current_puzzle_id).first()
             print("Current puzzle:")
             print(current_puzzle)
+            puzzle_answers = current_puzzle.answer.split(',')
 
             answer_record = Answers(
-                level_name=current_puzzle_name, team=current_user.name, answer=answer)
+                level_name=current_puzzle_id, team=current_user.name, answer=answer)
             db.session.add(answer_record)
             db.session.commit()
 
-            if answer_lower == current_puzzle.answer:
+            is_correct = False
+            # for location case is important
+            if is_location:
+                is_correct = answer == current_puzzle.answer.strip()
+            else:
+                for puzzle_answer in puzzle_answers:
+                    if puzzle_answer.strip().lower() == answer_lower:
+                        is_correct = True
+                        break
+            if is_correct:
                 user = User.query.filter_by(name=current_user.name).first()
                 new_level = user.level_completed + 1
                 user.last_time = datetime.now()
@@ -144,18 +161,22 @@ def puzzle():
 
     elif request.method == 'GET':
 
-        if current_user.level_completed == TOTAL_QUIZ:
+        if current_user.level_completed >= TOTAL_QUIZ:
             print("GET + CURRENT_LEVEL == TOTAL_QUIZ")
             return redirect(url_for("congrats"))
         else:
             print("GET ELSE")
-            print("Current User Level Completed: ",
-                  current_user.level_completed)
-            imageHash = hashlib.sha256(
-                current_user.token[current_user.level_completed].encode()).hexdigest()
-            imageFile = "images/" + imageHash + ".jpg"
-            print(imageFile)
-            image_link = url_for('static', filename=imageFile)
+            print("Current User Level Completed: ", current_user.level_completed)
+
+            current_puzzle_id = token[current_level]
+            print("Current puzzle id:", current_puzzle_id)
+
+            current_puzzle = Quiz.query.filter_by(
+                id=current_puzzle_id).first()
+
+            print("Current puzzle:")
+            print(current_puzzle)
+            image_link = current_puzzle.link
             level = int(current_user.level_completed) + 1
             # return render_template("puzzle.html", level=current_user.level_completed+1, image_link=image_link)
             return render_template("puzzle.html", level=level, image_link=image_link)
@@ -174,7 +195,7 @@ def logout():
 @app.route("/congrats")
 @login_required
 def congrats():
-    TOTAL_QUIZ = len(Quiz.query.all())
+    TOTAL_QUIZ = len(current_user.token)
     if TOTAL_QUIZ == current_user.level_completed:
         return render_template("congrats.html")
     return redirect(url_for("puzzle"))
@@ -235,7 +256,6 @@ def team_reg():
             return "Backend fucked up badly !"
     else:
         return redirect(url_for("index"))
-
 
 @login_required
 @app.route("/admin_dashboard", methods=['GET', 'POST'])

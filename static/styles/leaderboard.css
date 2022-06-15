@@ -15,7 +15,7 @@ a {
 }
 
 header {
-    background-color: #FFCC00;
+    background-color: #41a9e6;
     color: black;
     display: flex;
     justify-content: space-between;
@@ -59,7 +59,7 @@ header {
 }
 
 .content-table thead tr {
-    background-color: rgb(255, 215, 56);
+    background-color: #1bb6b6;
     color: black;
     text-align: center;
     font-weight: bold;
@@ -75,7 +75,7 @@ header {
 }
 
 .content-table tbody tr:nth-of-type(even) {
-    background-color: rgb(255, 252, 86);
+    background-color: #51dfdf;
 }
 
 .content-table tbody tr:last-of-type {
