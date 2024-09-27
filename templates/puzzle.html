@@ -29,7 +29,7 @@
         <h2>Current Level : {{level}}</h2>
         <br>
         <div class="image-container">
-            <img src={{image_link}} />
+            <img src="{{ url_for('protected_image') }}" />
         </div>
         <form action="/puzzle" method="POST">
             <div class="form-container">

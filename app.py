@@ -1,17 +1,19 @@
 import time
 import hashlib
-
-from flask import Flask, request, redirect, url_for
+from dotenv import load_dotenv
+import os
+from flask import Flask, request, redirect, url_for, send_from_directory, abort
 from flask import render_template
 from flask_login import UserMixin, LoginManager, login_user, current_user, login_required, logout_user
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 from datetime import datetime
 
+load_dotenv()
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://lwpxktnemjbjbq:1e5f7178b6dc3de5821a0cd96beae0b0dbff29826d9d3a98edcfeca7ef3bebea@ec2-52-48-159-67.eu-west-1.compute.amazonaws.com:5432/dciepftsq0l0s2'
-
-app.config['SECRET_KEY'] = 'WHO_IS_YOUR_DADDY'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB_CONN_STR')
+app.config['SECRET_KEY'] = os.getenv("SECRET")
 
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -22,7 +24,7 @@ login_manager.init_app(app)
 
 
 class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(40), primary_key=True, unique=True)
     name = db.Column(db.String(40), nullable=False, unique=True)
     pwd = db.Column(db.String(80), nullable=False)
     token = db.Column(db.String(30), nullable=False)
@@ -62,30 +64,31 @@ class Answers(db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return User.query.get(user_id)
 
 
 @login_manager.unauthorized_handler
 def unauthorized():
     return redirect(url_for("index"))
 
-
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        return render_template("index.html")
+        if current_user.is_authenticated:
+            return redirect(url_for("puzzle"))
+        else:
+            return render_template("index.html")
 
     elif request.method == 'POST':
         print('Login request')
         username = request.form.get("username").strip()
         password = request.form.get("password").strip()
         print(username, ',', password)
-        user = User.query.filter_by(name=username).first()
+        user = User.query.filter_by(id=username).first()
         password = hashlib.sha256(password.encode()).hexdigest()
         print(user)
 
         if user is not None and password == user.pwd:
-            user_is_logged_in = True
             login_user(user)
             return redirect(url_for("puzzle"))
         else:
@@ -93,6 +96,27 @@ def index():
 
     else:
         return "Backend FUCKED UP badly"
+
+
+@app.route('/puzzle_image')
+@login_required
+def protected_image():
+    # Only allow access if the user meets the conditions (e.g., logged in, etc.)
+    token = current_user.token
+    TOTAL_QUIZ = len(token)
+    print(TOTAL_QUIZ)
+    current_level = current_user.level_completed 
+    print(current_level)
+    
+    if current_level >= TOTAL_QUIZ:
+        abort(404)
+    else:
+        current_puzzle_id = token[current_level]
+        print(current_puzzle_id)
+        try:
+            return send_from_directory('puzzles', f"{current_puzzle_id}.png")
+        except FileNotFoundError:
+            abort(404)  # Return 404 if the file doesn't exist
 
 
 @app.route("/puzzle", methods=['GET', 'POST'])
@@ -118,46 +142,24 @@ def puzzle():
         else:
             print("POST + ")
             answer = request.form.get("answer").strip().replace(' ', '')
-            answer_lower = answer.lower()
+            answer = answer.lower()
             print('submitted answer: ', answer)
 
-            current_puzzle_id = token[current_level]
-            is_location = str(current_puzzle_id).islower()
-            print("Current puzzle id: ", current_puzzle_id)
-            print("is location: ", is_location)
-
-            current_puzzle = Quiz.query.filter_by(
-                id=current_puzzle_id).first()
-            print("Current puzzle:")
-            print(current_puzzle)
-            puzzle_answers = current_puzzle.answer.split(',')
-
-            answer_record = Answers(
-                level_name=current_puzzle_id, team=current_user.name, answer=answer)
-            db.session.add(answer_record)
-            db.session.commit()
-
-            is_correct = False
-            # for location case is important
-            if is_location:
-                is_correct = answer == current_puzzle.answer.strip()
-            else:
-                for puzzle_answer in puzzle_answers:
-                    if puzzle_answer.strip().lower() == answer_lower:
-                        is_correct = True
-                        break
-            if is_correct:
-                user = User.query.filter_by(name=current_user.name).first()
-                new_level = user.level_completed + 1
-                user.last_time = datetime.now()
-                user.level_completed = new_level
+            try:
+                # Directly execute the stored procedure without `db.session.begin()`
+                db.session.execute(text("CALL update_user_level (:user_id, :answer)"), 
+                                    {"user_id": current_user.id, "answer": answer})
+                
+                # Commit the session after calling the procedure
                 db.session.commit()
+                user = User.query.filter_by(name=current_user.id).first()
+                return redirect(url_for("puzzle"))
 
-                user = User.query.filter_by(name=current_user.name).first()
-            else:
-                user = User.query.filter_by(name=current_user.name).first()
-
-            return redirect(url_for("puzzle"))
+            except Exception as e:
+                # Rollback the session in case of errors
+                db.session.rollback()
+                print("Error occurred:", e)
+                return redirect(url_for("puzzle"))
 
     elif request.method == 'GET':
 
@@ -176,10 +178,10 @@ def puzzle():
 
             print("Current puzzle:")
             print(current_puzzle)
-            image_link = current_puzzle.link
+            # image_link = current_puzzle.link
             level = int(current_user.level_completed) + 1
             # return render_template("puzzle.html", level=current_user.level_completed+1, image_link=image_link)
-            return render_template("puzzle.html", level=level, image_link=image_link)
+            return render_template("puzzle.html", level=level)
 
     else:
         return "You're not supposed to be here !"
@@ -188,7 +190,13 @@ def puzzle():
 @app.route("/logout")
 @login_required
 def logout():
+    if current_user.is_authenticated:
+        role = current_user.role
+    else:
+        role = None
     logout_user()
+    if role == 'ADMIN':
+        return redirect(url_for("admin"))
     return redirect(url_for("index"))
 
 
@@ -210,59 +218,59 @@ def leaderboard():
     return render_template("leaderboard.html", user_list=user_list)
 
 
-@login_required
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
     if request.method == 'GET':
-        return render_template("admin_login.html")
-
+        if current_user.is_authenticated:
+            return redirect(url_for("admin_dashboard"))
+        else:
+            return render_template("admin_login.html")
     elif request.method == 'POST':
         username = request.form.get("username")
         password = request.form.get("password")
         print(username, password)
-        if username == "admin" and password == "WHO_IS_YOUR_DADDY":
-            print('Trying to login admin')
-            admin_user = User.query.filter_by(name=username).first()
-            print(admin_user)
-            login_user(admin_user)
-            print(current_user)
+        user = User.query.filter_by(id=username).first()
+        password = hashlib.sha256(password.encode()).hexdigest()
+        print(user)
+        if user is not None and password == user.pwd and user.role=='ADMIN':
+            login_user(user)
+            print (user)
             return redirect(url_for("admin_dashboard"))
         else:
             return redirect(url_for("admin"))
-
     else:
         return redirect(url_for("index"))
 
 
-@login_required
-@app.route("/team_reg", methods=['GET', 'POST'])
-def team_reg():
-    if current_user.name == "admin":
-        if request.method == 'GET':
-            return render_template("team_register.html")
+# @login_required
+# @app.route("/team_reg", methods=['GET', 'POST'])
+# def team_reg():
+#     if current_user.id == "admin":
+#         if request.method == 'GET':
+#             return render_template("team_register.html")
 
-        elif request.method == 'POST':
-            teamname = request.form.get("teamname")
-            password = request.form.get("password")
-            token = request.form.get("token")
+#         elif request.method == 'POST':
+#             teamname = request.form.get("teamname")
+#             password = request.form.get("password")
+#             token = request.form.get("token")
 
-            password_hash = hashlib.sha256(password.encode()).hexdigest()
-            user = User(name=teamname, pwd=password_hash, token=token)
-            db.session.add(user)
-            db.session.commit()
+#             password_hash = hashlib.sha256(password.encode()).hexdigest()
+#             user = User(id=teamname, pwd=password_hash, token=token)
+#             db.session.add(user)
+#             db.session.commit()
 
-            return render_template("team_register.html")
-        else:
-            return "Backend fucked up badly !"
-    else:
-        return redirect(url_for("index"))
+#             return render_template("team_register.html")
+#         else:
+#             return "Backend fucked up badly !"
+#     else:
+#         return redirect(url_for("index"))
 
 @login_required
 @app.route("/admin_dashboard", methods=['GET', 'POST'])
 def admin_dashboard():
     print('in admin dashboard')
-    print(current_user.name == "admin")
-    if current_user.name == "admin":
+    if current_user.is_authenticated and current_user.role == "ADMIN":
+        print(current_user.id )
         print('user is admin')
         if request.method == 'GET':
             answer_list = Answers.query.order_by(Answers.level_name.asc())
