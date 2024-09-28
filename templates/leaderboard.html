@@ -2,7 +2,10 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="{{url_for('static', filename='styles/leaderboard.css')}}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/style.css')}}">
+
     <title>Leaderboard</title>
 </head>
 
@@ -23,7 +26,7 @@
         </nav>
     </header>
 
-    <div align="center">
+    <div class="leaderboard">
         <br>
         <h2>Current Standings</h2>
         <table class="content-table">
@@ -31,7 +34,7 @@
                 <tr>
                     <th>Rank</th>
                     <th>Team Name</th>
-                    <th>Puzzles Completed</th>
+                    <th>Level</th>
                     <th>Time Completed</th>
                 </tr>
             </thead>

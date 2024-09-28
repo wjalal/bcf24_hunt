@@ -100,7 +100,7 @@ def index():
 
 @app.route('/puzzle_image')
 @login_required
-def protected_image():
+def puzzle_image():
     # Only allow access if the user meets the conditions (e.g., logged in, etc.)
     token = current_user.token
     TOTAL_QUIZ = len(token)
@@ -114,9 +114,10 @@ def protected_image():
         current_puzzle_id = token[current_level]
         print(current_puzzle_id)
         try:
-            return send_from_directory('puzzles', f"{current_puzzle_id}.png")
+            # return send_from_directory('puzzles', f"{current_puzzle_id}.png")
+            return send_from_directory('static', "doge.jpg")
         except FileNotFoundError:
-            abort(404)  # Return 404 if the file doesn't exist
+            abort(404)  
 
 
 @app.route("/puzzle", methods=['GET', 'POST'])
@@ -178,10 +179,10 @@ def puzzle():
 
             print("Current puzzle:")
             print(current_puzzle)
-            # image_link = current_puzzle.link
+            image_link = current_puzzle.link
             level = int(current_user.level_completed) + 1
-            # return render_template("puzzle.html", level=current_user.level_completed+1, image_link=image_link)
-            return render_template("puzzle.html", level=level)
+            return render_template("puzzle.html", level=level, image_link=image_link)
+            # return render_template("puzzle.html", level=level)
 
     else:
         return "You're not supposed to be here !"
@@ -195,6 +196,7 @@ def logout():
     else:
         role = None
     logout_user()
+
     if role == 'ADMIN':
         return redirect(url_for("admin"))
     return redirect(url_for("index"))
@@ -205,8 +207,9 @@ def logout():
 def congrats():
     TOTAL_QUIZ = len(current_user.token)
     if TOTAL_QUIZ == current_user.level_completed:
-        return render_template("congrats.html")
-    return redirect(url_for("puzzle"))
+        f_link = Quiz.query.filter_by(id='Z').first().link
+        return render_template("congrats.html", image_link=f_link)
+    return redirect(url_for("puzzle_image"))
 
 
 @app.route("/leaderboard")
@@ -242,28 +245,28 @@ def admin():
         return redirect(url_for("index"))
 
 
-# @login_required
-# @app.route("/team_reg", methods=['GET', 'POST'])
-# def team_reg():
-#     if current_user.id == "admin":
-#         if request.method == 'GET':
-#             return render_template("team_register.html")
+@login_required
+@app.route("/team_reg", methods=['GET', 'POST'])
+def team_reg():
+    if current_user.is_authenticated and current_user.role == "ADMIN":
+        if request.method == 'GET':
+            return render_template("team_register.html")
+        elif request.method == 'POST':
+            teamid = request.form.get("teamid")
+            teamname = request.form.get("teamname")
+            password = request.form.get("password")
+            token = request.form.get("token")
 
-#         elif request.method == 'POST':
-#             teamname = request.form.get("teamname")
-#             password = request.form.get("password")
-#             token = request.form.get("token")
+            password_hash = hashlib.sha256(password.encode()).hexdigest()
+            user = User(id=teamid, name=teamname, pwd=password_hash, token=token, role='TEAM')
+            db.session.add(user)
+            db.session.commit()
 
-#             password_hash = hashlib.sha256(password.encode()).hexdigest()
-#             user = User(id=teamname, pwd=password_hash, token=token)
-#             db.session.add(user)
-#             db.session.commit()
-
-#             return render_template("team_register.html")
-#         else:
-#             return "Backend fucked up badly !"
-#     else:
-#         return redirect(url_for("index"))
+            return redirect(url_for("leaderboard"))
+        else:
+            return "Backend fucked up badly !"
+    else:
+        return redirect(url_for("index"))
 
 @login_required
 @app.route("/admin_dashboard", methods=['GET', 'POST'])
@@ -273,7 +276,7 @@ def admin_dashboard():
         print(current_user.id )
         print('user is admin')
         if request.method == 'GET':
-            answer_list = Answers.query.order_by(Answers.level_name.asc())
+            answer_list = Answers.query.order_by(Answers.id.desc())
             return render_template("answer_page.html", answer_list=answer_list)
 
         elif request.method == 'POST':
@@ -281,16 +284,16 @@ def admin_dashboard():
             level = request.form.get("level")
 
             if level == "" and teamname != "":
-                answer_list = Answers.query.filter_by(team=teamname)
+                answer_list = Answers.query.filter_by(team=teamname).order_by(Answers.id.desc())
             elif teamname == "" and level != "":
                 level_int = level
-                answer_list = Answers.query.filter_by(level_name=level_int)
+                answer_list = Answers.query.filter_by(level_name=level_int).order_by(Answers.id.desc())
             elif level != "" and teamname != "":
                 level_int = level
                 answer_list = Answers.query.filter_by(
-                    team=teamname, level_name=level_int)
+                    team=teamname, level_name=level_int).order_by(Answers.id.desc())
             else:
-                answer_list = Answers.query.order_by(Answers.level.asc())
+                answer_list = Answers.query.order_by(Answers.id.desc())
 
             return render_template("answer_page.html", answer_list=answer_list)
 

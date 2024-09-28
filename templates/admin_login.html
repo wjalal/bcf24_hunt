@@ -3,13 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Admin Login Panel</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='styles/admin_login.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/style.css')}}">
 </head>
 
 <body>
     <div class="login-box">
-        <h1>Admin Login Panel</h1>
+        <h2>Admin Login Panel</h2>
         <form action="/admin" method="POST">
             <div class="textbox">
                 <input type="text" id="username" name="username" placeholder="Username">
@@ -17,8 +19,8 @@
             <div class="textbox">
                 <input type="password" id="password" name="password" placeholder="Password">
             </div>
-            <div>
-                <input class="button" type="submit" title="Submit">
+            <div class="button-container"> <!-- Wrap the button in a div -->
+                <input class="admin button" type="submit" title="Login">
             </div>
         </form>
     </div>

@@ -1,0 +1,288 @@
+/* Base reset and global styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background:  #f0f4f8;
+    color: #333;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Flexbox container for centering content */
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* Navigation Styles */
+nav {
+    background-color: #1b63b1;;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+nav.admin {
+    background-color: #a70f0f;
+}
+
+
+.navigation-list {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.navigation-list li {
+    margin: 0;
+}
+
+.navigation-list a {
+    font-size: 1.25rem;
+    font-weight: 500;
+    padding: 10px 20px;
+    color: white;
+    transition: background 0.3s;
+}
+
+.navigation-list a:hover {
+    background-color: #155294;;
+    border-radius: 12px;
+}
+
+.navigation-list.admin a:hover {
+    background-color: #7c0a0a;
+    border-radius: 12px;
+}
+
+/* Header and Titles */
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+}
+h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+
+.logo {
+    width: 50%;
+}
+
+/* Forms */
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    gap: 5px;
+    width: 100%;
+    /* max-width: 600px; */
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin: 20px 0px 20px;
+}
+
+input[type="text"], input[type="password"], textarea {
+    width: 100%;
+    height: 3rem; /* Adjust height to match the input fields' height */
+    padding: 12px; /* Keep this for consistent padding */
+    margin: 0px 0px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+    box-sizing: border-box; /* Include padding and border in total width/height */
+}
+
+input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Centering form container */
+.form-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Center form elements horizontally */
+    justify-content: center; /* Center form elements vertically if needed */
+}
+
+.button-container {
+    display: flex;                /* Enable flexbox */
+    justify-content: center;      /* Center the button horizontally */
+    margin-top: 10px;            /* Add some space above the button */
+}
+
+.button {
+    width: 6rem; /* Set a specific width for the submit button */
+    height: 3rem; /* Adjust height to match the input fields' height */
+    margin: 0px 5px; /* Set margins on the left and right */
+    padding: 0 10px;
+    background-color: #1b63b1;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center; /* Ensure the button text is centered */
+    display: flex; /* Enable flex for centering text */
+    align-items: center; /* Center text vertically */
+    justify-content: center; /* Center text horizontally */
+    font-size: 1em; /* Match font size with input fields */
+
+}
+
+.button.admin {
+    background-color: #a70f0f;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+.button.admin:hover {
+    background-color: #800d0d;
+}
+
+.button:active {
+    transform: scale(0.98);
+}
+
+/* Centering and limiting the table width */
+.content-table {
+    width: 100%;
+    max-width: 60%; 
+    margin: 20px auto; /* Center the table horizontally */
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow-x: auto; /* Allow horizontal scrolling if the table is too wide */
+
+}
+
+.content-table thead {
+    background-color: #1b63b1;;
+    color: white;
+}
+
+.content-table.admin thead {
+    background-color: #a70f0f;
+}
+
+.content-table th, .content-table td {
+    padding: 12px 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+    white-space: nowrap; /* Prevent overly wide cells */
+}
+
+.content-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.content-table thead:hover tr:hover {
+    background-color: #154b85;;
+}
+
+.content-table.admin thead:hover tr:hover {
+    background-color: #7a1313;
+}
+
+.textbox {
+    width: 100%;
+    margin-bottom: 10px; /* Add spacing between input fields */
+}
+
+.content-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+
+
+/* Login Box */
+.login-box {
+    width: 30%;
+    padding: 20px;
+    /* background: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); */
+    margin: 7.5rem auto;
+    text-align: center;
+}
+
+.login-box h1 {
+    margin-bottom: 20px;
+    font-size: 2.5em;
+}
+
+
+/* Puzzle container styling */
+.puzzle-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content */
+    justify-content: space-between;
+    padding: 10px 0px;
+    margin: 10px 0px; /* Added margin-bottom of 40px */
+    width: 100%;
+    max-width: 100%; /* Make the container take up the full width */
+}
+
+.image-container {
+    width: 100%; /* Make the image container full width */
+    height: 100%; /* Make the image container full height */
+    display: flex; /* Enable flexbox for centering the image */
+    justify-content: center; /* Center the image horizontally */
+    align-items: center; /* Center the image vertically */
+    margin: 5px auto; /* Added margin-bottom of 40px */
+
+}
+
+.image-container img {
+    max-width: 100%;
+    max-height: 100%; /* Ensure the image fits within the container */
+    border-radius: 8px;
+}
+
+@media (max-width: 1024px) {
+
+    .login-box {
+        width: 90%;
+    }
+
+    .content-table th, .content-table td {
+        padding: 15px; /* Increase padding for table cells */
+    }
+
+    .content-table {
+        width: 60vw;
+        font-size: 10px;
+    }
+
+    .content-table th, .content-table td {
+        padding: 10px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .answerform {
+        width: 60%;
+    }
+}

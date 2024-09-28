@@ -133,3 +133,7 @@ dmypy.json
 bin
 include
 share
+
+
+data/puzzles/
+data/hashed/

@@ -3,14 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Treasure Hunt</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='styles/index.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/style.css')}}">
 </head>
 
 <body>
     <div class="login-box">
-        <h1> YOUKNOWWHAT </h1>
-        <h1>Welcome to Treasure Hunt !</h1>
+        <img class='logo' src="{{url_for('static', filename='assets/bdf_logo.svg')}}">
+        <h2>Welcome to the Treasure Hunt!</h2>
         <form action="/" method="POST">
             <div class="textbox">
                 <input type="text" id="username" name="username" placeholder="Username">
@@ -18,8 +19,8 @@
             <div class="textbox">
                 <input type="password" id="password" name="password" placeholder="Password">
             </div>
-            <div>
-                <input class="button" type="submit" title="Submit">
+            <div class="button-container"> <!-- Wrap the button in a div -->
+                <input class="button" type="submit" title="Login">
             </div>
         </form>
     </div>

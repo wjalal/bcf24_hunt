@@ -3,22 +3,24 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Admin Login Panel</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='styles/team_register.css')}}">
+    <title>Team Registry</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/style.css')}}">
 </head>
 
 <body>
     <header>
-        <nav>
-            <ul class="navigation-list">
+        <nav class="admin">
+            <ul class="navigation-list admin">
                 <li>
-                    <a href="/admin_dashboard">Admin Dashboard</a>
+                    <a href="/admin_dashboard">Dashboard</a>
                 </li>
                 <li>
-                    <a href="/team_reg">Team Registration</a>
+                    <a href="/team_reg">Team Reg</a>
                 </li>
                 <li>
-                    <a href="/admin">Logout</a>
+                    <a href="/logout">Logout</a>
                 </li>
             </ul>
         </nav>
@@ -26,10 +28,14 @@
 
 
     <div class="login-box">
-        <h1>Team Registration</h1>
+        <h2>Team Registration</h2>
         <form action="/team_reg" method="POST">
             <div class="textbox">
-                <input type="text" id="teamname" name="teamname" placeholder="Teamname">
+                <input type="text" id="teamid" name="teamid" placeholder="Team ID">
+            </div>
+            <div class="textbox">
+            <div class="textbox">
+                <input type="text" id="teamname" name="teamname" placeholder="Team name">
             </div>
             <div class="textbox">
                 <input type="password" id="password" name="password" placeholder="Password">
@@ -37,8 +43,8 @@
             <div class="textbox">
                 <input type="text" id="token" name="token" placeholder="Team Token">
             </div>
-            <div>
-                <input class="button" type="submit" title="Register">
+            <div class="button-container"> <!-- Wrap the button in a div -->
+                <input class="button admin" type="submit" title="Register" value="Register">
             </div>
         </form>
     </div>
