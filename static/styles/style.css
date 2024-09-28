@@ -196,7 +196,7 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 .content-table tr:hover {
     background-color: #f1f1f1;
 }
-
+ 
 .content-table thead:hover tr:hover {
     background-color: #154b85;;
 }
