@@ -1,0 +1,80 @@
+/* Grid container */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(13, 50px); /* 13 columns of 50px each */
+    grid-template-rows: repeat(13, 50px); /* 13 rows of 50px each */
+    gap: 1px; /* Spacing between grid cells */
+    background-color: white;
+}
+
+/* Individual grid cell */
+.grid-cell {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* The dot inside each cell */
+.dot {
+    width: 10px;
+    height: 10px;
+    background-color: black;
+    border-radius: 50%;
+    opacity: 0.1; /* Lower initial opacity */
+    transition: opacity 0.3s;
+}
+
+/* Style when the cell is selected */
+.grid-cell.selected {
+    outline: 3px solid #000;
+}
+
+/* Very light shades of red, green, and blue */
+.grid-cell.red {
+    background-color: rgba(255, 0, 0, 0.2); /* Light red */
+}
+
+.grid-cell.green {
+    background-color: rgba(0, 255, 0, 0.2); /* Light green */
+}
+
+.grid-cell.blue {
+    background-color: rgba(0, 0, 255, 0.2);
+}
+
+/* Fully opaque dot when toggled */
+.dot.visible {
+    opacity: 1;
+}
+
+/* Tiny digits in the bottom corners */
+.digit {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    font-size: 10px;
+    border: none;
+    background: none;
+    outline: none;
+    text-align: center;
+}
+
+.bottom-left {
+    bottom: 0;
+    left: 2px;
+}
+
+.bottom-right {
+    bottom: 0;
+    right: 2px;
+}
+
+/* Hide text selection border */
+.digit:focus {
+    border: none;
+}
