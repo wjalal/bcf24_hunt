@@ -1,31 +1,31 @@
 import random
 
 
-k = 16  # Precision: 10 binary digits after decimal point
-def float_to_binary(x, k):
-    # Handle negative numbers
-    if x < 0:
-        return '-' + float_to_binary(-x, k)
+# k = 16  # Precision: 10 binary digits after decimal point
+# def float_to_binary(x, k):
+#     # Handle negative numbers
+#     if x < 0:
+#         return '-' + float_to_binary(-x, k)
 
-    # Separate the number into integer and fractional parts
-    integer_part = int(x)
-    fractional_part = x - integer_part
+#     # Separate the number into integer and fractional parts
+#     integer_part = int(x)
+#     fractional_part = x - integer_part
 
-    # Convert integer part to binary
-    binary_integer = bin(integer_part)[2:].zfill(8)
+#     # Convert integer part to binary
+#     binary_integer = bin(integer_part)[2:].zfill(8)
 
-    # Convert fractional part to binary with k precision digits
-    binary_fractional = []
-    while fractional_part > 0 and len(binary_fractional) < k:
-        fractional_part *= 2
-        bit = int(fractional_part)
-        binary_fractional.append(str(bit))
-        fractional_part -= bit
+#     # Convert fractional part to binary with k precision digits
+#     binary_fractional = []
+#     while fractional_part > 0 and len(binary_fractional) < k:
+#         fractional_part *= 2
+#         bit = int(fractional_part)
+#         binary_fractional.append(str(bit))
+#         fractional_part -= bit
 
-    # Combine both parts
-    binary_result = binary_integer + ''.join(binary_fractional)
+#     # Combine both parts
+#     binary_result = binary_integer + ''.join(binary_fractional)
 
-    return binary_result
+#     return binary_result
 
 
 def string_to_bit_int(s):
@@ -74,8 +74,8 @@ for i in range(n-1):
     print (f'P_{i} = {bin(P[i])[2:].zfill(64)}')
 
 print()
-print (f'P_{n-1} = {bin(P[n-i])}')
-split_test(P[n-i])
+print (f'P_{n-1} = {bin(P[n-1])[2:].zfill(64)}')
+split_test(P[n-1])
 print()
 
 R_check = 0
