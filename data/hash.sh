@@ -6,10 +6,10 @@ rm hashed/*
 
 cp puzzles.tsv hashed/puzzles_h.tsv
 
-# Loop over all PNG files in the current directory
+# Loop over all PNG and GIF files in the 'puzzles' directory
 cd puzzles
 
-for file in *.png; do
+for file in *.png *.gif; do
     if [ -f "$file" ]; then
         # Generate a random UUID
         uuid=$(uuidgen)
@@ -17,10 +17,8 @@ for file in *.png; do
 
         # Rename the file to the UUID and move it to the 'hashed' folder
         cp "$file" "../hashed/$fullname"
-        # Replace every occurrence of $file with the full URL in puzzles_h.txt
+        # Replace every occurrence of $file with the full URL in puzzles_h.tsv
         sed -i "s|$file|https://csefest2024-storage.sgp1.cdn.digitaloceanspaces.com/hunt/$fullname|g" "../hashed/puzzles_h.tsv"
-
-        
     fi
 done
 

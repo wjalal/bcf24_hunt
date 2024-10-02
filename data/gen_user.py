@@ -2,7 +2,7 @@ import hashlib
 
 def user():
     print('SET TRANSACTION READ WRITE;')
-
+    print('DELETE FROM \"user\";')
     for line in open('users.tsv').readlines():
         vars = line.split('\t')
         id = vars[0].strip()
@@ -10,7 +10,7 @@ def user():
         pwd = vars[2].strip()
         pwd = hashlib.sha256(pwd.encode()).hexdigest()
 
-        token = vars[10].strip() + 'Z'
+        token = vars[3].strip()
         if id=='admin':
             role = 'ADMIN'
         else:

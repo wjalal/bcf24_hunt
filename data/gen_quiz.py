@@ -2,6 +2,7 @@ import hashlib
 
 def quiz():
     print('SET TRANSACTION READ WRITE;')
+    print('DELETE FROM answers;')
     print('DELETE FROM quiz;')
     for line in open('hashed/puzzles_h.tsv').readlines():
         vars = line.split('\t')
