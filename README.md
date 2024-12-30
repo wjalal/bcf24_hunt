@@ -1,44 +1,77 @@
-# Reception Treasure Hunt
-**Treasure hunt website made for CSE Freshers' Reception.**
+# BUET CSE Fest 2024 Treasure Hunt
 
-##  Project Overview
-Core framework: Flask (Python), Database (SQLite)
- 1. **Requirements** <br>
- Create a Virtual Environment using python's module **virtualenv**. And install the packages mentioned in the "**requirements.txt**" file.
+This repository contains the source code for the BUET CSE Fest 2024 Treasure Hunt website, an interactive platform designed to engage participants in a series of challenges during the event.
 
-2. **Activate the environment** <br>
-In the app directory, open **cmd** or **terminal** and type in- `Scripts\activate.bat` and hit enter. Your **virtualenv** should activate.
+## Live Demo
 
-3. **Launching the app**<br>
-In the **virtualenv**, type `python app.py` to start the server. After it starts, go to browser and type in "`localhost:5000`" to see the flask app running.
+Experience the Treasure Hunt live at [bcf24hunt.wjalal.xyz](http://bcf24hunt.wjalal.xyz).
 
-## Project Structure
- - **Database**
- The database file named "**hunt.db**" contains 3 tables. Those are: 
- 
-	 - **User**
-	 This one contains **id**, **username**, **password** (sha256), **last input time**, **levels** they have completed and a special **token**. The token contains the serial of the puzzles of the treasure hunt. i.e: 12346578 means that the serial the puzzles will come in is: 1st, 2nd, 3rd, 4th, 6th, 5th, 7th, 8th
+## Features
 
-	- **Quiz**
-	This one contains **id** and **answer** to the specific puzzle. The id of the puzzle works as the name of the puzzle (image file).
+- **User Registration and Authentication**: Participants can create accounts and securely log in to track their progress.
+- **Interactive Challenges**: A series of puzzles and tasks that participants must solve to advance.
+- **Real-Time Leaderboard**: Displays participant rankings based on challenge completion times.
+- **Responsive Design**: Ensures optimal viewing and interaction across various devices.
 
-	- **Answers**
-	This table holds all the input that the teams (user) gives in each rounds. It contains several fields, such as: **teamname**, **answer**, **puzzle level**.
- 
- - **Routes**
-The URL routes configured for the app are: 
-	 - `"/admin"`
-	 Leads to admin panel login for the admins.
-	- `"/admin_dashboard"`
-Takes to the page of 
-	- `"/team_reg"`
-	This route takes the admin to the user registration page. Where admins can register new user/team.
+## Installation
 
-	- `"/"`
-		Index URl where users will need to log in using username and password.
-	- `"/logout"`
-	This route logs the user out.
-	- `"/leaderboard"`
-	Takes the user to the leaderboard page. Where the standings can be seen.
-	- `"/puzzle"`
-	This route takes the user to the latest puzzle (current level).
+To set up the project locally, follow these steps:
+
+1. **Clone the Repository**:
+
+   ```
+   git clone https://github.com/wjalal/bcf24_hunt.git
+   ```
+
+2. **Navigate to the Project Directory**:
+
+   ```
+   cd bcf24_hunt
+   ```
+
+3. **Create a Virtual Environment**:
+
+   Ensure you have Python installed. Then, create and activate a virtual environment:
+
+   ```
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+4. **Install Dependencies**:
+
+   ```
+   pip install -r requirements.txt
+   ```
+
+5. **Set Up the Database**:
+
+   ```
+   flask db upgrade
+   ```
+
+6. **Run the Application**:
+
+   ```
+   flask run
+   ```
+
+   Access the application at `http://localhost:5000`.
+
+## Usage
+
+1. **Register an Account**:
+
+   Sign up with a username and password to participate in the treasure hunt.
+
+2. **Log In**:
+
+   Access your account using your credentials.
+
+3. **Start the Hunt**:
+
+   Begin solving challenges and advance through the levels.
+
+4. **Track Progress**:
+
+   Monitor your standings on the real-time leaderboard.
