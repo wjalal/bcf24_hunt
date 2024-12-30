@@ -2,9 +2,6 @@
 
 This repository contains the source code for the BUET CSE Fest 2024 Treasure Hunt website, an interactive platform designed to engage participants in a series of challenges during the event.
 
-## Live Demo
-
-Experience the Treasure Hunt live at [bcf24hunt.wjalal.xyz](http://bcf24hunt.wjalal.xyz).
 
 ## Features
 
